@@ -1,0 +1,31 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure wasm-pack
+        uses: jetli/wasm-pack-action@v0.3.0
+      - name: Configure Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          cache: "npm"
+          cache-dependency-path: ./www/package-lock.json
+      - name: Build
+        working-directory: ./www
+        run: |
+          wasm-pack build
+          npm ci
+          npm run build
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./www/dist
+          branch: gh-pages
