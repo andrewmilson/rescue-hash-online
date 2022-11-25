@@ -1,0 +1,5 @@
+# One import per line. Makes reviewing changes easier.
+imports_granularity = "Item"
+# Group all imports together i.e. no whitespace between use
+group_imports = "One"
+wrap_comments = true
